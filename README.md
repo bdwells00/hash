@@ -17,8 +17,8 @@ Modules used:
 
 ## Usage
 
+```
 usage: hash.py [-h] [-f <filename>] [--hash <hash>] [-l <number>] [--all] [-a] [-b <number>] [-v] [--version]
-
 hash.py v1.0.0 (2021-11-07): Calculate hash codes for files
 
 optional arguments:
@@ -36,13 +36,17 @@ optional arguments:
   --version             print program version and exit
 
 This program has no warranty. Please use with caution.
-
+```
   
 Minimum usage example:
+```  
   hash.py -f hash.py
+```  
 Output:
+```
   Hash:       Time:       Hex Value:
   sha256      0.0000s     4cca846639cfc4dd3b1be5c9e48e2f9aa3fbfc3d16f134bf187560a4fc01eacf
+```
 
 ## Minutiae
   
