@@ -2,7 +2,7 @@
 
 
 import argparse
-from collections import defaultdict as dd
+from collections import defaultdict
 import hashlib
 import os
 import platform
@@ -15,45 +15,72 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files'
-__version__ = '1.0.0'
-__version_date__ = '2021-11-07'
+__version__ = '1.1.0'
+__version_date__ = '2021-11-11'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
+# create list of available hash algorithms
+h_list = [i for i in sorted(hashlib.algorithms_guaranteed)]
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def hash_check(h: str):
-    """This function executes the hashing algorithm. There is no return. The
-       global variable is updated on each pass through this function.
+    """This function reads the file in chunks, and executes the hashing 
+       algorithm. This tracks the file read times along with the hashing time.
 
     Args:
-        h (str): the hash type to use
+        h (str): this is the type of hash to execute on this function
 
     Returns:
-        hash_check_return (str): the hexidecimal hash value of the file
+        tuple: the time to read the file, the time to hash the file, and the
+               standard hash output of the requested type for the file.
     """
     # hashlib function variable
     hf_var = (getattr(hashlib, h)())
+    # create file & hash time vars, and hex var
+    file_time, hash_time, hash_hex = 0, 0, ''
     # use try when opening file to prevent crash from rights or other issues
     try:
         with open(args.file, 'rb') as f:
-            # while loop to read file in chunks
+            # while loop to read file in chunks and hash each chunk
             while True:
-                f_chunk = f.read(args.blocksize * hf_var.block_size)
+                # start the file read time tracking
+                f_start = time.monotonic()
+                # read a block of the file (default 8k)
+                f_chunk = f.read(args.blocksize * 64)
+                # stop the file read time tracking
+                f_stop = time.monotonic()
+                # add/append file reading to the time var
+                file_time += (f_stop - f_start)
+                # the while loop break for when the file read completes
                 if not f_chunk:
                     break
+                # start the hash time tracking
+                h_start = time.monotonic()
+                # update the specific hash chunk
                 hf_var.update(f_chunk)
+                # stop the hash time tracking
+                h_stop = time.monotonic()
+                # add/append hashing to the time var
+                hash_time += (h_stop - h_start)
     except OSError as e:
         # print the file open error and exit
         print(f'Error: unable to open {args.file}.\nError: {e}')
         sys.exit(1)
 
+    # convert to standard hexadecimal output
+    # start the hash time tracking
+    h_start = time.monotonic()
     if 'shake' in h:  # shake hashes require length variable
-        hash_check_return = hf_var.hexdigest(args.length)
+        hash_hex = hf_var.hexdigest(args.length)
     else:  # all other hashes
-        hash_check_return = hf_var.hexdigest()
+        hash_hex = hf_var.hexdigest()
+    # stop the hash time tracking
+    h_stop = time.monotonic()
+    # add/append hashing to the time var
+    hash_time += (h_stop - h_start)
 
-    return hash_check_return
+    return file_time, hash_time, hash_hex
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,32 +92,20 @@ def main():
               f'{platform.python_implementation()}\n\tCompiler: '
               f'{platform.python_compiler()}\nPlatform:\n\tOS: '
               f'{platform.platform()}\n\tCPU: {platform.processor()}\n'
-              f'Variables:\n\tFile: {args.file}\n\tHash: {args.hash}\n\tLength'
-              f': {args.length}\n\tBlocksize: {args.blocksize}\n')
-    # create default dict of tuples to hold the hash return values
-    hash_dict = dd(tuple)
-    if args.all:  # check if all hashs are requested and loop through them
-        for h_entry in sorted(hashlib.algorithms_guaranteed):
-            # using time.monotonic to track the function start and stop time
-            m_start = time.monotonic()
-            # call the hash function and assign to hash_hex string
-            hash_hex = hash_check(h_entry)
-            m_stop = time.monotonic()
-            # populate this default dict with every hash
-            hash_dict[h_entry] += (m_stop - m_start, hash_hex)
-    else:  # else generate a hash of the specified type
-        # using time.monotonic to track the function start and stop time
-        m_start = time.monotonic()
-        # call the hash function and assign to hash_hex string
-        hash_hex = hash_check(args.hash)
-        m_stop = time.monotonic()
-        # even though single, also assign to dict for single print command
-        hash_dict[args.hash] += (m_stop - m_start, hash_hex)
+              f'Variables:\n\tFile: {args.file}\n\tHash: {h_list}\n\tLength'
+              f': {args.length}\n\tBlocksize: {args.blocksize / 16:.2f}kb ({args.blocksize} * 64)\n')
+
+    # create a default dict to hold the output
+    hash_hex = defaultdict(tuple)
+    # call the hash function and assign to hash_hex dict
+    for hash_type in h_list:
+        hash_hex[hash_type] = hash_check(hash_type)
+
     # print the hash or hashes
-    print('Hash:\t    Time:\tHex Value:')
-    for key, value in hash_dict.items():
+    print('Hash:\t    File Time:\tHash Time:\tHex Value:')
+    for key, value in hash_hex.items():
         # :<12s = 12 spaces with string; :.4f = 4 place accuracy after decimal
-        print(f'{key:<12s}{value[0]:.4f}s\t{value[1]}')
+        print(f'{key:<12s}{value[0]:.4f}s\t{value[1]:.4f}s\t\t{value[2]}')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,7 +163,7 @@ if __name__ == '__main__':
 
     if args.available:  # print available hashes and exit if requested
         print(f'{ver}\nAvailable hashes:\nHash:\t\tBlock size:\tDigest Size:')
-        for i in sorted(hashlib.algorithms_guaranteed):
+        for i in h_list:
             print(f'{i:<15s} {getattr(hashlib, i)().block_size:<16}'
                   f'{getattr(hashlib, i)().digest_size}')
         sys.exit(0)
@@ -159,10 +174,6 @@ if __name__ == '__main__':
     else:  # exit if the file does not exist
         print('Error: no file specified')
         sys.exit(1)
-    # check to confirm the hash requested is supported
-    if args.hash.lower() not in hashlib.algorithms_guaranteed:
-        print(f'Error: hash "{args.hash}" invalid or unavailable.')
-        sys.exit(1)
     # confirm the length and blocksize variables are greather than 0
     if args.length < 1:
         print(f'Error: {args.length} invalid. Length must be 1 or greater.')
@@ -170,5 +181,13 @@ if __name__ == '__main__':
     if args.blocksize < 1:
         print(f'Error: {args.blocksize} invalid. Length must be 1 or greater.')
         sys.exit(1)
+    # if not processing all hash, reset h_list to just the one hash
+    if not args.all:
+        # check to confirm the hash request is supported
+        if args.hash.lower() not in h_list:
+            print(f'Error: hash "{args.hash}" invalid or unavailable.')
+            sys.exit(1)
+        else:
+            h_list = [args.hash.lower()]
 
     main()
