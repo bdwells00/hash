@@ -20,18 +20,18 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files.'
-__version__ = '1.4.2'
+__version__ = '1.4.3'
 __version_date__ = '2021-11-30'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
 # global print tracker only updated via bp
-print_tracker = 0                                               # from bp 0.1.1
+print_tracker = 0                                               # from bp 0.1.2
 # create list of available hash algorithms
 hash_list = [i for i in sorted(hashlib.algorithms_guaranteed)]
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class Ct:                                                       # from bp 0.1.1
+class Ct:                                                       # from bp 0.1.2
     """A class of constants used to color strings for console printing. Using
     the full Unicode escape sequence to allow both 8 and 24 bit color here."""
     # ~~~ #     3-bit/4-bit in 8 bit (256) unicode, plus some grey 256
@@ -173,7 +173,7 @@ def validate_and_process_args(h_list: list):
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def bp(txt: list, erl=0, fil=1, fls=0, inl=0, log=1, num=1, veb=0):  # bp 0.1.1
+def bp(txt: list, erl=0, fil=1, fls=0, inl=0, log=1, num=1, veb=0):  # bp 0.1.2
     """Better Print: send output commands here instead of using print command.
     Txt must be sent in the form of pairs of strings in a list. The even
     strings ("0", "2", "4", etc.) contain the output text while the odd strings
@@ -341,9 +341,9 @@ def hash_check(h: str):
         with open(args.file, 'rb') as f:
             bp(['while loop to read file in chunks and hash each chunk.',
                 Ct.BMAGENTA], veb=3)
-                # uncomment the bp sections under while loop only for testing
-                # on small files. Performace is crushed on large files with 
-                # many loops.
+            # uncomment the bp sections under while loop only for testing
+            # on small files. Performace is crushed on large files with
+            # many loops.
             while True:
                 # bp(['start the file read time tracking.', Ct.BMAGENTA],
                     #  veb=3)       # noqa
