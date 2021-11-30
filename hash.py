@@ -20,7 +20,7 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files.'
-__version__ = '1.4.1'
+__version__ = '1.4.2'
 __version_date__ = '2021-11-30'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
@@ -341,6 +341,9 @@ def hash_check(h: str):
         with open(args.file, 'rb') as f:
             bp(['while loop to read file in chunks and hash each chunk.',
                 Ct.BMAGENTA], veb=3)
+                # uncomment the bp sections under while loop only for testing
+                # on small files. Performace is crushed on large files with 
+                # many loops.
             while True:
                 # bp(['start the file read time tracking.', Ct.BMAGENTA],
                     #  veb=3)       # noqa
