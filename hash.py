@@ -20,7 +20,7 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files.'
-__version__ = '1.4.0'
+__version__ = '1.4.1'
 __version_date__ = '2021-11-30'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
@@ -342,28 +342,29 @@ def hash_check(h: str):
             bp(['while loop to read file in chunks and hash each chunk.',
                 Ct.BMAGENTA], veb=3)
             while True:
-                bp(['start the file read time tracking.', Ct.BMAGENTA], veb=3)
+                # bp(['start the file read time tracking.', Ct.BMAGENTA],
+                    #  veb=3)       # noqa
                 f_start = time.monotonic()
-                bp(['read a block of the file (default 16k).', Ct.BMAGENTA],
-                    veb=3)
+                # bp(['read a block of the file (default 16k).', Ct.BMAGENTA],
+                    # veb=3)       # noqa
                 f_chunk = f.read(args.blocksize * BLOCK_SIZE_FACTOR)
-                bp(['stop the file read time tracking', Ct.BMAGENTA], veb=3)
+                # bp(['stop the file read time tracking', Ct.BMAGENTA], veb=3)
                 f_stop = time.monotonic()
-                bp(['add/append file reading to the time variable, file_time.',
-                    Ct.BMAGENTA], veb=3)
+                # bp(['add/append file reading to the time variable,
+                    #  file_time.', Ct.BMAGENTA], veb=3)       # noqa
                 file_time += (f_stop - f_start)
-                bp(['break the while loop when the file chunk is empty',
-                    Ct.BMAGENTA], veb=3)
+                # bp(['break the while loop when the file chunk is empty',
+                    # Ct.BMAGENTA], veb=3)       # noqa
                 if not f_chunk:
                     break
-                bp(['start the hash time tracking.', Ct.BMAGENTA], veb=3)
+                # bp(['start the hash time tracking.', Ct.BMAGENTA], veb=3)
                 h_start = time.monotonic()
-                bp(['hash the file chunk.', Ct.BMAGENTA], veb=3)
+                # bp(['hash the file chunk.', Ct.BMAGENTA], veb=3)
                 hf_var.update(f_chunk)
-                bp(['stop the hash time tracking.', Ct.BMAGENTA], veb=3)
+                # bp(['stop the hash time tracking.', Ct.BMAGENTA], veb=3)
                 h_stop = time.monotonic()
-                bp(['add/append hashing to the hash time variable, hash_time',
-                    Ct.BMAGENTA], veb=3)
+                # bp(['add/append hashing to the hash time variable,
+                    # hash_time', Ct.BMAGENTA], veb=3)       # noqa
                 hash_time += (h_stop - h_start)
                 file_loop += 1
                 if file_loop % 100 == 0:
@@ -371,7 +372,7 @@ def hash_check(h: str):
                         Ct.BBLUE, '% | ', Ct.A, 'Hash: ', Ct.GREEN, f'{h}',
                         Ct.RED, f' | File: {args.file}', Ct.GREEN], inl=1,
                         num=0, fls=1)
-            bp(['\n', Ct.A])
+            bp(['', Ct.A])
     except OSError as e:
         bp([f'unable to open {args.file}.\n\t{e}', Ct.RED], erl=2)
         sys.exit(1)
@@ -427,7 +428,7 @@ def main(h_list: list):
     for hash_type in h_list:
         bp([f'calling hash_check({hash_type})', Ct.BMAGENTA], veb=3)
         hash_output[hash_type] = hash_check(hash_type)
-    bp(['Hash:\t    File Time:\tHash Time:\tHex Value:', Ct.A])
+    bp(['\nHash:\t    File Time:\tHash Time:\tHex Value:', Ct.A])
     for k, v in hash_output.items():
         bp([f'{k:<12s}', Ct.RED, f'{v[0]:.4f}s\t{v[1]:.4f}s\t\t', Ct.BBLUE,
             f'{v[2]}', Ct.A], num=0)
@@ -446,7 +447,7 @@ def main(h_list: list):
         Ct.BMAGENTA], veb=3)
     end_time = time.monotonic()
     total_time = end_time - START_PROG_TIME
-
+    bp(['', Ct.A], log=0, veb=1)
     bp([f'program total time: {total_time}s', Ct.BMAGENTA], veb=1)
     bp([f'program overhead time: {total_time - cumulative_time}s',
         Ct.BMAGENTA], veb=1)
