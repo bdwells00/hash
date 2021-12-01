@@ -48,7 +48,7 @@ options:
 This program has no warranty. Please use with caution.
 ```
   
-Minimum usage example:
+#### Minimum usage example:
 ```  
   hash.py -f hash.py
 ```  
@@ -62,7 +62,7 @@ Hash:       File Time:  Hash Time:      Hex Value:
 sha256      0.0000s     0.0000s         8c40f88e554f5f51cf12ecc99c3bee8d80deabfaa1b6bcfa4c29760d4d49eb3d
 ```
 
-Comparison example:
+#### Comparison example:
 ```
   hash.py -f /Linux/alpine-extended-3.15.0-x86_64.iso --compare 3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
 ```
@@ -80,7 +80,7 @@ Compared:  3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
 HASHES MATCH!!
 ```
 
-All hash with L1 verbosity example:
+#### All hash with L1 verbosity example:
 ```
   hash.py -f /Linux/alpine-extended-3.15.0-x86_64.iso --all -v
 ```
@@ -127,7 +127,7 @@ program total time:    21.562000000150874s
 program overhead time: 0.5609999999869615s
 ```
 
-The same All hash with L1 verbosity on a slightly faster linux server example:
+#### The same All hash with L1 verbosity on a slightly faster linux server example:
 ```
   python3 ./hash.py -f ./alpine-extended-3.15.0-x86_64.iso -v --all
 ```
@@ -175,7 +175,7 @@ program overhead time: 1.4780595321499277s
 
 ```
 
-Available hash example:
+#### Available hash example:
 ```
   hash.py --available
 ```
@@ -201,6 +201,103 @@ shake_128       168             32              64
 shake_256       136             32              64
 ```
 
+
+## Comparison with other tools
+
+#### Linux (Ubuntu server 21.10) putty 0.76 - sha256sum (GNU coreutils 8.32) using GNU Time:
+```
+  /usr/bin/time sha256sum alpine-extended-3.15.0-x86_64.iso
+```
+Output:
+```
+3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3  alpine-extended-3.15.0-x86_64.iso
+1.84user 0.09system 0:01.93elapsed 100%CPU (0avgtext+0avgdata 2324maxresident)k
+0inputs+0outputs (0major+111minor)pagefaults 0swaps
+```
+#### Linux (Ubuntu server 21.10) putty 0.76 - hash.py (1.4.6) using GNU Time:
+```
+  /usr/bin/time python3 ./hash.py -f ./alpine-extended-3.15.0-x86_64.iso -v
+```
+Output:
+```
+hash.py v1.4.6 (2021-12-01): Calculate hash codes for files.
+
+Python: v3.9.7 | CPython | GCC 11.2.0
+OS: Linux-5.15.3-051503-generic-x86_64-with-glibc2.34 | x86_64
+Args:  file: ./alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: False | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
+
+100% | Hash: sha256    | File: ./alpine-extended-3.15.0-x86_64.iso
+
+Hash:       File Time:  Hash Time:      Hex Value:
+sha256      0.1494s     0.3769s         3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
+
+program total time:    0.6363643319928087s
+program overhead time: 0.1100371487555094s
+0.41user 0.24system 0:00.66elapsed 100%CPU (0avgtext+0avgdata 14324maxresident)k
+0inputs+0outputs (0major+3413minor)pagefaults 0swaps
+```
+#### Windows (11) certutil (10.0.22000.1) Terminal Preview 1.12.2931 - PS 7.2 using Measure-Command:
+```
+  Measure-Command { certutil.exe -hashfile ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso sha256 | Out-Default }
+```
+Output:
+```
+SHA256 hash of ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso:
+3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
+CertUtil: -hashfile command completed successfully.
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 612
+Ticks             : 6120578
+TotalDays         : 7.08400231481482E-06
+TotalHours        : 0.000170016055555556
+TotalMinutes      : 0.0102009633333333
+TotalSeconds      : 0.6120578
+TotalMilliseconds : 612.0578
+```
+#### Windows (11) hash.py (1.4.6) Terminal Preview 1.12.2931 - PS 7.2 using Measure-Command:
+```
+  Measure-Command { .\hash.py -f ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso -v | Out-Default }
+```
+Output:
+```
+hash.py v1.4.6 (2021-12-01): Calculate hash codes for files.
+
+Python: v3.10.0 | CPython | MSC v.1929 64 bit (AMD64)
+OS: Windows-10-10.0.22000-SP0 | AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD
+Args:  file: ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: False | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
+
+100% | Hash: sha256    | File: ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso
+
+Hash:       File Time:  Hash Time:      Hex Value:
+sha256      0.2200s     0.3730s         3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
+
+program total time:    0.6879999998491257s
+program overhead time: 0.09499999973922968s
+
+Days              : 0
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 776
+Ticks             : 7760233
+TotalDays         : 8.98175115740741E-06
+TotalHours        : 0.000215562027777778
+TotalMinutes      : 0.0129337216666667
+TotalSeconds      : 0.7760233
+TotalMilliseconds : 776.0233
+```
+
+### Table of results
+| OS    | CPU   |  Program | Time  | hash.py time |
+| :---: | :---: | :------: | :---: | :----------: |
+| Ubuntu 21:10 (5.15 kernel) | AMD Ryzen 5 5600G | sha256sum (8.32) | 1.93s | n/a |
+| Ubuntu 21:10 (5.15 kernel) | AMD Ryzen 5 5600G | hash.py (1.4.6) | 0.66s | 0.64s |
+| Windows 11 21H2 (22000.318)) | AMD Ryzen 7 4700U | certutil (10.0.22000.1) | 0.61s | n/a |
+| Windows 11 21H2 (22000.318)) | AMD Ryzen 7 4700U | hash.py (1.4.6) | 0.77s | 0.69s |
 
 ## Minutiae
   
