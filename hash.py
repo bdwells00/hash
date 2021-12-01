@@ -20,8 +20,8 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files.'
-__version__ = '1.4.4'
-__version_date__ = '2021-11-30'
+__version__ = '1.4.6'
+__version_date__ = '2021-12-01'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
 # global print tracker only updated via bp
@@ -65,7 +65,6 @@ def get_args():
                         '--file',
                         help='file to generate hash against',
                         metavar=f'{Ct.RED}<filename>{Ct.A}',
-                        required=True,
                         type=str)
     parser.add_argument('--hash',
                         help='hash type to use; ignored if all is used',
@@ -132,17 +131,19 @@ def validate_and_process_args(h_list: list):
         sys.exit(1)
     bp(['print available hashes and exit if requested', Ct.BMAGENTA], veb=3)
     if args.available:
-        bp([f'{ver}\n\n', Ct.BBLUE, 'Available:\nHash:\t\tBlock size:\tDigest '
-            'Length:', Ct.A])
+        bp(['Available:\nHash:\t\tBlock size:\tDigest Length:\tHex Length:',
+            Ct.A])
         for i in h_list:
             if 'shake' not in i:
                 bp([f'{i:<16s}', Ct.RED,
                     f'{getattr(hashlib, i)().block_size:<16}'
-                    f'{getattr(hashlib, i)().digest_size}', Ct.BBLUE], num=0)
+                    f'{getattr(hashlib, i)().digest_size:<16}'
+                    f'{2 * getattr(hashlib, i)().digest_size:<16}', Ct.BBLUE],
+                    num=0)
             else:
                 bp([f'{i:<16s}', Ct.RED,
-                    f'{getattr(hashlib, i)().block_size:<16}'
-                    f'{args.length}', Ct.BBLUE], num=0)
+                    f'{getattr(hashlib, i)().block_size:<16}{args.length:<16}'
+                    f'{2 * args.length:<16}', Ct.BBLUE], num=0)
         sys.exit(0)
     bp([f'check to confirm {args.file} exists.', Ct.BMAGENTA], veb=3)
     if args.file:
@@ -337,7 +338,7 @@ def hash_check(h: str):
         f_info = os.stat(args.file, follow_symlinks=False)
         file_loop = 0
         f_loops = ceil(f_info.st_size / (args.blocksize * BLOCK_SIZE_FACTOR))
-        update_loop = 1 if f_loops < 100 else (f_loops / 100)
+        update_loop = 1 if f_loops < 100 else int(f_loops / 100)
         with open(args.file, 'rb') as f:
             bp(['while loop to read file in chunks and hash each chunk.',
                 Ct.BMAGENTA], veb=3)
@@ -461,9 +462,9 @@ def main(h_list: list):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if __name__ == '__main__':
 
-    bp([f'{ver}: {__purpose__}\n', Ct.BBLUE])
     # make args global
     args = get_args()
+    bp([f'{ver}: {__purpose__}\n', Ct.BBLUE])
     bp([f'calling validate_and_process_args({hash_list}) and assigning back to'
         ' hash_list. Allows for all or just one hash.', Ct.BMAGENTA], veb=2,
         num=0)
