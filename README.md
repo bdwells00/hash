@@ -80,6 +80,101 @@ Compared:  3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
 HASHES MATCH!!
 ```
 
+All hash with L1 verbosity example:
+```
+  hash.py -f /Linux/alpine-extended-3.15.0-x86_64.iso --all -v
+```
+Output:
+```
+hash.py v1.4.6 (2021-12-01): Calculate hash codes for files.
+
+Python: v3.10.0 | CPython | MSC v.1929 64 bit (AMD64)
+OS: Windows-10-10.0.22000-SP0 | AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD
+Args:  file: \Linux\alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: True | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
+
+100% | Hash: blake2b   | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: blake2s   | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: md5       | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha1      | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha224    | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha256    | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha384    | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_224  | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_256  | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_384  | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_512  | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha512    | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: shake_128 | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: shake_256 | File: \Linux\alpine-extended-3.15.0-x86_64.iso
+
+Hash:       File Time:  Hash Time:      Hex Value:
+blake2b     0.2370s     1.2160s         bbf173718952406b91632c741a892d4f787efea31854d1f07bd178d4a924332320a09fb9c6876f203337930f3722a1ac07a6c3ec32cf397eeb0a56c787d7eda6
+blake2s     0.3430s     1.7350s         8a1aad2d544d2af01d64e4925a889c6ccee16bf96f853ae7536f72cd5facc91c
+md5         0.2500s     0.9530s         de72fa9e5f727b03f9a03e27affc70b7
+sha1        0.2670s     0.3580s         4babcc407aecfd25ceddd2a038aadab5a8a6b106
+sha224      0.3100s     0.3930s         9d9bbffbda16bedd05dc05976c3cdb940b1939dba87f5e35b695e91b
+sha256      0.3270s     0.3770s         3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
+sha384      0.2830s     0.8420s         5a53fa6e189c53028bf5ef0ddc0b8d29ba89b647d9ada3fcdfc5690312af7942329b2f47a92cd74bfe818e2619b49f1f
+sha3_224    0.3260s     1.4080s         f18facfe594e273587b1e2d7527d8298460595c1efd3776a95bd7540
+sha3_256    0.3270s     1.4070s         39a46701a7fc5b63e78bfaa417905e34bbaa21d029ef01da2e96e50091be348e
+sha3_384    0.2820s     1.9670s         3c3eb58b3ecc6375cf55b2ef632ea064dd7554c9dbd1369ef93c9921a9aa98e8ea069a5ec16d0a7afdb77f1f8033ee2b
+sha3_512    0.2830s     2.6580s         c171fc4057e8a14c4a46d16e17c28a8d0bcb0325fe87430a9133ddd1091c2e2fff0a2212cd03a116d15e535607fde0ed514350a62dfd53bb39273e288f83e321
+sha512      0.2670s     0.8580s         56cbd835c874d2cc73c2668a8803fdbd7a88fc8947306146f704e6075885723e72b98cd6bf667944025f94d27d55fe0fda13bc0a43a59a5668a380898d9af626
+shake_128   0.2520s     1.3250s         590104870ac3a495a2b849b1741e125c843036c7d75e9f91f132362e6a04f65e
+shake_256   0.2810s     1.4690s         f345184e9895af3edf513ebfe660179e693eba15c2390239bd15dd1e4eb30249
+
+program total time:    21.562000000150874s
+program overhead time: 0.5609999999869615s
+```
+
+The same All hash with L1 verbosity on a slightly faster linux server example:
+```
+  python3 ./hash.py -f ./alpine-extended-3.15.0-x86_64.iso -v --all
+```
+Output:
+```
+hash.py v1.4.6 (2021-12-01): Calculate hash codes for files.
+
+Python: v3.9.7 | CPython | GCC 11.2.0
+OS: Linux-5.15.3-051503-generic-x86_64-with-glibc2.34 | x86_64
+Args:  file: ./alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: True | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
+
+100% | Hash: blake2b   | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: blake2s   | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: md5       | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha1      | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha224    | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha256    | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha384    | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_224  | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_256  | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_384  | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha3_512  | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha512    | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: shake_128 | File: ./alpine-extended-3.15.0-x86_64.iso
+100% | Hash: shake_256 | File: ./alpine-extended-3.15.0-x86_64.iso
+
+Hash:       File Time:  Hash Time:      Hex Value:
+blake2b     0.1580s     0.8124s         bbf173718952406b91632c741a892d4f787efea31854d1f07bd178d4a924332320a09fb9c6876f203337930f3722a1ac07a6c3ec32cf397eeb0a56c787d7eda6
+blake2s     0.1571s     1.2121s         8a1aad2d544d2af01d64e4925a889c6ccee16bf96f853ae7536f72cd5facc91c
+md5         0.1564s     0.8041s         de72fa9e5f727b03f9a03e27affc70b7
+sha1        0.1497s     0.3554s         4babcc407aecfd25ceddd2a038aadab5a8a6b106
+sha224      0.1503s     0.3758s         9d9bbffbda16bedd05dc05976c3cdb940b1939dba87f5e35b695e91b
+sha256      0.1506s     0.3757s         3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
+sha384      0.1551s     0.7263s         5a53fa6e189c53028bf5ef0ddc0b8d29ba89b647d9ada3fcdfc5690312af7942329b2f47a92cd74bfe818e2619b49f1f
+sha3_224    0.1573s     1.1627s         f18facfe594e273587b1e2d7527d8298460595c1efd3776a95bd7540
+sha3_256    0.1573s     1.2283s         39a46701a7fc5b63e78bfaa417905e34bbaa21d029ef01da2e96e50091be348e
+sha3_384    0.1597s     1.5075s         3c3eb58b3ecc6375cf55b2ef632ea064dd7554c9dbd1369ef93c9921a9aa98e8ea069a5ec16d0a7afdb77f1f8033ee2b
+sha3_512    0.1591s     2.1435s         c171fc4057e8a14c4a46d16e17c28a8d0bcb0325fe87430a9133ddd1091c2e2fff0a2212cd03a116d15e535607fde0ed514350a62dfd53bb39273e288f83e321
+sha512      0.1558s     0.7263s         56cbd835c874d2cc73c2668a8803fdbd7a88fc8947306146f704e6075885723e72b98cd6bf667944025f94d27d55fe0fda13bc0a43a59a5668a380898d9af626
+shake_128   0.1569s     1.0148s         590104870ac3a495a2b849b1741e125c843036c7d75e9f91f132362e6a04f65e
+shake_256   0.1577s     1.2287s         f345184e9895af3edf513ebfe660179e693eba15c2390239bd15dd1e4eb30249
+
+program total time:    17.332667410984868s
+program overhead time: 1.4780595321499277s
+
+```
+
 Available hash example:
 ```
   hash.py --available
@@ -105,6 +200,7 @@ sha512          128             64              128
 shake_128       168             32              64
 shake_256       136             32              64
 ```
+
 
 ## Minutiae
   
