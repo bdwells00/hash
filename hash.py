@@ -20,7 +20,7 @@ __license__ = 'MIT'
 __origin_date__ = '2021-11-06'
 __prog__ = 'hash.py'
 __purpose__ = 'Calculate hash codes for files.'
-__version__ = '1.4.3'
+__version__ = '1.4.4'
 __version_date__ = '2021-11-30'
 __version_info__ = tuple(int(i) for i in __version__.split('.') if i.isdigit())
 ver = f'{__prog__} v{__version__} ({__version_date__})'
@@ -88,7 +88,7 @@ def get_args():
                         action='store_true')
     parser.add_argument('-b',
                         '--blocksize',
-                        help='specify number of 1kB read blocks (1-100000);'
+                        help='specify number of 1kB read blocks (1-100000000);'
                              'consumes more ram for minimally faster'
                              ' processing',
                         metavar=f'{Ct.YELLOW}<number>{Ct.A}',
@@ -126,9 +126,9 @@ def validate_and_process_args(h_list: list):
         bp([f'"--length {args.length}" invalid. Length must be between (and '
             'including) 1 and 128.', Ct.RED], erl=2)
         sys.exit(1)
-    if args.blocksize < 1 or args.blocksize > 100000:
+    if args.blocksize < 1 or args.blocksize > 100000000:
         bp([f'"--blocksize {args.blocksize}" invalid. Length must between (and'
-            ' including) 1 and 100000.', Ct.RED], erl=2)
+            ' including) 1 and 100000000.', Ct.RED], erl=2)
         sys.exit(1)
     bp(['print available hashes and exit if requested', Ct.BMAGENTA], veb=3)
     if args.available:
@@ -168,7 +168,7 @@ def validate_and_process_args(h_list: list):
     if args.compare and args.all:
         bp(['cannot combine "--compare" with "--all".', Ct.RED], erl=2)
         sys.exit(1)
-    bp([f'returning {h_list}.', Ct.BMAGENTA], veb=2)
+    bp([f'returning {h_list}.', Ct.BMAGENTA], veb=2, num=0)
     return h_list
 
 
@@ -325,7 +325,7 @@ def hash_check(h: str):
         - tuple: the time to read the file, the time to hash the file, and the
                standard hexadecimal hash output of the requested type.
     """
-    bp([f'entering hash_check({h}).', Ct.BMAGENTA], veb=3)
+    bp([f'entering hash_check({h}).', Ct.BMAGENTA], veb=3, num=0)
     bp(['create hf_var function variable using the hash.', Ct.BMAGENTA], veb=3)
     hf_var = (getattr(hashlib, h)())
     bp(['create file & hash time vars, and hex var', Ct.BMAGENTA], veb=3)
@@ -335,9 +335,9 @@ def hash_check(h: str):
     bp(['open file with "try:".', Ct.BMAGENTA], veb=3)
     try:
         f_info = os.stat(args.file, follow_symlinks=False)
-        file_size = f_info.st_size
         file_loop = 0
-        f_loops = ceil(file_size / (args.blocksize * BLOCK_SIZE_FACTOR))
+        f_loops = ceil(f_info.st_size / (args.blocksize * BLOCK_SIZE_FACTOR))
+        update_loop = 1 if f_loops < 100 else (f_loops / 100)
         with open(args.file, 'rb') as f:
             bp(['while loop to read file in chunks and hash each chunk.',
                 Ct.BMAGENTA], veb=3)
@@ -370,11 +370,11 @@ def hash_check(h: str):
                     # hash_time', Ct.BMAGENTA], veb=3)       # noqa
                 hash_time += (h_stop - h_start)
                 file_loop += 1
-                if file_loop % 100 == 0:
+                if file_loop % update_loop == 0:
                     bp([f'\u001b[1000D{(file_loop / f_loops) * 100:.0f}',
-                        Ct.BBLUE, '% | ', Ct.A, 'Hash: ', Ct.GREEN, f'{h}',
-                        Ct.RED, f' | File: {args.file}', Ct.GREEN], inl=1,
-                        num=0, fls=1)
+                        Ct.BBLUE, '% | Hash: ', Ct.A, f'{h:<9s}', Ct.RED,
+                        ' | ', Ct.A, 'File: ', Ct.A, f'{args.file}', Ct.GREEN],
+                        inl=1, num=0, fls=1)
             bp(['', Ct.A])
     except OSError as e:
         bp([f'unable to open {args.file}.\n\t{e}', Ct.RED], erl=2)
@@ -397,7 +397,7 @@ def hash_check(h: str):
         Ct.BMAGENTA], veb=3)
     hash_time += (h_stop - h_start)
     bp([f'returning tuple of ({file_time}, {hash_time}, {hash_hex})',
-        Ct.BMAGENTA], veb=3)
+        Ct.BMAGENTA], veb=3, num=0)
 
     return file_time, hash_time, hash_hex
 
@@ -405,7 +405,7 @@ def hash_check(h: str):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def main(h_list: list):
 
-    bp([f'entered main({h_list}).', Ct.BMAGENTA], veb=3)
+    bp([f'entered main({h_list}).', Ct.BMAGENTA], veb=3, num=0)
     bp([f'Python: v{platform.python_version()}', Ct.BBLUE, ' | ', Ct.A,
         f'{platform.python_implementation()}', Ct.BBLUE, ' | ', Ct.A,
         f'{platform.python_compiler()}', Ct.BBLUE], veb=1, log=0)
@@ -414,22 +414,22 @@ def main(h_list: list):
     bp(['Args: ', Ct.A], inl=1, veb=1, log=0)
     for k, v in vars(args).items():
         if k == 'hash':
-            bp([f' {k}', Ct.GREEN, f': {v} |', Ct.RED], num=0, inl=1, veb=1,
-                log=0)
+            bp([f' {k}', Ct.GREEN, ':', Ct.A, f'{v}', Ct.RED, ' |', Ct.A],
+                num=0, inl=1, veb=1, log=0)
         elif k == 'compare':
             bp([f' {k}', Ct.GREEN, f': {v} |', Ct.A], num=0, inl=1, veb=1,
                 log=0)
         else:
             bp([f' {k}', Ct.GREEN, f': {v} |', Ct.A], inl=1, veb=1, log=0)
-    bp(['\n', Ct.A], veb=1, log=0)
+    bp(['\u001b[1D \n', Ct.A], veb=1, log=0, num=0)
     bp(['create a default dict, "hash_output" of type tuple, to hold the '
         'output. Each hash gets its own entry. create "cumulative_time" to '
         'hold duration of all file and hash times.', Ct.BMAGENTA], veb=3)
     hash_output, cumulative_time = defaultdict(tuple), 0
     bp(['cycle through each entry in "h_list" assigning hash_output.',
-        Ct.BMAGENTA], veb=2)
+        Ct.BMAGENTA], veb=2, num=0)
     for hash_type in h_list:
-        bp([f'calling hash_check({hash_type})', Ct.BMAGENTA], veb=3)
+        bp([f'calling hash_check({hash_type})', Ct.BMAGENTA], veb=3, num=0)
         hash_output[hash_type] = hash_check(hash_type)
     bp(['\nHash:\t    File Time:\tHash Time:\tHex Value:', Ct.A])
     for k, v in hash_output.items():
@@ -451,9 +451,9 @@ def main(h_list: list):
     end_time = time.monotonic()
     total_time = end_time - START_PROG_TIME
     bp(['', Ct.A], log=0, veb=1)
-    bp([f'program total time: {total_time}s', Ct.BMAGENTA], veb=1)
+    bp([f'program total time:    {total_time}s', Ct.BMAGENTA], veb=1, log=0)
     bp([f'program overhead time: {total_time - cumulative_time}s',
-        Ct.BMAGENTA], veb=1)
+        Ct.BMAGENTA], veb=1, log=0)
 
     bp(['main() complete.', Ct.BMAGENTA], veb=3)
 
@@ -465,7 +465,8 @@ if __name__ == '__main__':
     # make args global
     args = get_args()
     bp([f'calling validate_and_process_args({hash_list}) and assigning back to'
-        ' hash_list. Allows for all or just one hash.', Ct.BMAGENTA], veb=2)
+        ' hash_list. Allows for all or just one hash.', Ct.BMAGENTA], veb=2,
+        num=0)
     hash_list = validate_and_process_args(hash_list)
-    bp([f'calling main({hash_list}).', Ct.BMAGENTA], veb=2)
+    bp([f'calling main({hash_list}).', Ct.BMAGENTA], veb=2, num=0)
     main(hash_list)
