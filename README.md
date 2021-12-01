@@ -238,11 +238,11 @@ program overhead time: 0.1100371487555094s
 ```
 #### Windows (11) certutil (10.0.22000.1) Terminal Preview 1.12.2931 - PS 7.2 using Measure-Command:
 ```
-  Measure-Command { certutil.exe -hashfile ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso sha256 | Out-Default }
+  Measure-Command { certutil.exe -hashfile \Linux\alpine-extended-3.15.0-x86_64.iso sha256 | Out-Default }
 ```
 Output:
 ```
-SHA256 hash of ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso:
+SHA256 hash of \Linux\alpine-extended-3.15.0-x86_64.iso:
 3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
 CertUtil: -hashfile command completed successfully.
 
@@ -260,7 +260,7 @@ TotalMilliseconds : 612.0578
 ```
 #### Windows (11) hash.py (1.4.6) Terminal Preview 1.12.2931 - PS 7.2 using Measure-Command:
 ```
-  Measure-Command { .\hash.py -f ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso -v | Out-Default }
+  Measure-Command { .\hash.py -f \Linux\alpine-extended-3.15.0-x86_64.iso -v | Out-Default }
 ```
 Output:
 ```
@@ -268,9 +268,9 @@ hash.py v1.4.6 (2021-12-01): Calculate hash codes for files.
 
 Python: v3.10.0 | CPython | MSC v.1929 64 bit (AMD64)
 OS: Windows-10-10.0.22000-SP0 | AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD
-Args:  file: ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: False | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
+Args:  file: \Linux\alpine-extended-3.15.0-x86_64.iso | hash:sha256 | length: 32 | all: False | available: False | blocksize: 16 | compare: None | no_color: False | verbose: 1
 
-100% | Hash: sha256    | File: ..\..\Brandon\Downloads\Linux\alpine-extended-3.15.0-x86_64.iso
+100% | Hash: sha256    | File: \Linux\alpine-extended-3.15.0-x86_64.iso
 
 Hash:       File Time:  Hash Time:      Hex Value:
 sha256      0.2200s     0.3730s         3d78e47400176622ce5846139708d1eadb890de1c430c982a9f6548a446e78b3
